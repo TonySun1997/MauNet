@@ -1,0 +1,60 @@
+# ── Python ─────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.so
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Virtual envs ───────────────────────────────
+.venv/
+venv/
+env/
+.env
+.envrc
+
+# ── IDE / OS ───────────────────────────────────
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ── Jupyter ────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Training artifacts ─────────────────────────
+output/
+swanlog/
+wandb/
+runs/
+logs/
+
+# ── Weights & data ─────────────────────────────
+# 模型权重（不进 git；通过 GitHub Releases 或网盘分发）
+MAE_checkpoint/*.pth
+MAE_checkpoint/*.pth.tar
+MAE_checkpoint/*.pt
+MauNet_checkpoint/*.pth
+MauNet_checkpoint/*.pth.tar
+MauNet_checkpoint/*.pt
+*.pth
+*.pth.tar
+
+# 数据集（体积大，不进 git；参考 README 中的数据格式自行准备）
+dataset/train_dataset_*/
+dataset/test_dataset_1024/
+dataset/cryo_em_dataset_test/
+dataset/test/
+dataset/*/train/
+dataset/*/val/
+dataset/example/      # 若你想保留示例数据，请把这一行删掉
+*.mrc
+*.mrcs
+*.star

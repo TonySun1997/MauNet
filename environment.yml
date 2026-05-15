@@ -1,0 +1,20 @@
+name: maunet
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.9,<3.12
+  - numpy>=1.24
+  - tqdm
+  - pip
+  - pip:
+      - torch>=2.0
+      - torchvision>=0.15
+      - timm>=0.9
+      - opencv-python>=4.8
+      - scipy>=1.10            # utils.accuracy 的 Hungarian 匹配（可选）
+      - mrcfile>=1.4           # 读取 .mrc / .mrcs cryo-EM 数据
+      - matplotlib>=3.7        # gui_predict.py 可视化
+      - gradio>=4.0            # gui_predict.py 网页界面
