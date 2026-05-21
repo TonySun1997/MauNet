@@ -87,6 +87,7 @@ MauNet/
 ├── config.py                  # argparse + module-level config
 ├── train.py                   # training entry point (single-/multi-GPU)
 ├── test_predict.py            # CLI batch inference → particle coordinate CSV
+├── flip_star_y.py             # flip STAR Y for MRC / RELION axis alignment
 ├── gui_predict.py             # Gradio GUI for interactive picking
 ├── denoise.py                 # MRC / image denoising helpers
 ├── models/
@@ -149,6 +150,42 @@ Useful flags:
 | `--save_mask`           | Also dump the auxiliary mask probability map as PNG                               |
 | `--rescale_to_original` | Output coordinates in the original micrograph resolution (simple uniform scaling) |
 
+### Flip STAR Y for MRC / RELION
+
+MauNet inference on **PNG** (or a display-oriented view) uses a **top-origin**
+vertical axis. **MRC** micrographs in RELION often use the opposite convention,
+so particle positions in an exported `.star` can appear vertically mirrored
+when you open the same picks on the raw MRC stack.
+
+Use `flip_star_y.py` to remap **Y only** (X unchanged):
+
+```text
+y_mrc = image_height - y_in
+```
+
+`image_height` is the micrograph height in pixels (**MRC `Ny`**, same units as
+the coordinates in the STAR file — e.g. from `header.ny` in Python/mrcfile, or
+RELION’s micrograph size).
+
+```bash
+python flip_star_y.py \
+    --input  output/predictions/10017/picks.star \
+    --height 4096 \
+    --output output/predictions/10017/picks_mrc.star
+```
+
+| Flag | Meaning |
+| ---- | ------- |
+| `--input` / `-i` | Input RELION autopick `.star` (`_rlnCoordinateX`, `_rlnCoordinateY`) |
+| `--height` / `-H` | Micrograph height in pixels (required) |
+| `--output` / `-o` | Output path (default: `<input_stem>_yflip.star`) |
+| `--zero-indexed` | Use `y' = height - 1 - y` instead of `height - y` if your coords are 0-based |
+
+Example with a project STAR file and height 4096:
+
+```bash
+python flip_star_y.py -i 10028.star -H 4096 -o 10028_mrc.star
+```
 
 ---
 
