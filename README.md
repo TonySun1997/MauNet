@@ -42,7 +42,7 @@ International (CC BY 4.0)**; credit the record when you reuse the data.
 | Zenodo file | MD5 (verify after download) | Copy to |
 | ----------- | --------------------------- | ------- |
 | `MAE_epoch_500.pth.tar` | `ff29489d897dee4250a98630c015ceb9` | `MAE_checkpoint/MAE_epoch_500.pth.tar` |
-| `MauNet_pretrained.pth` | `75eda22316ee656ea5582fd203912c55` | `MauNet_checkpoint/MauNet_pretrained.pth` |
+| `MauNet_pretrained.pth` | `33462fe83c6d417240cb13f6b1ebe2fa` | `MauNet_checkpoint/MauNet_pretrained.pth` |
 
 ```bash
 mkdir -p MAE_checkpoint MauNet_checkpoint
