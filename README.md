@@ -112,22 +112,104 @@ MauNet/
 
 ## 3. Quick start — Inference (recommended for most users)
 
-### Gradio GUI (easiest)
+### 3.1 Graphical User Interface (recommended)
+
+To promote the practical use of MauNet in cryo-EM research, we provide an
+intuitive **Gradio** web GUI (`gui_predict.py`) for end-to-end particle picking.
+The interface integrates one-click inference, real-time result visualization,
+and standard-format export — no command-line expertise required. The layout
+is split into two regions: a **left parameter panel** and a **right result
+panel**.
+
+#### Launch
 
 ```bash
+conda activate maunet
 python gui_predict.py
-# → open http://127.0.0.1:7860
+# → open http://127.0.0.1:7860  (LAN: http://<server-ip>:7860)
 ```
 
-The default `权重路径` field is already filled with
-`MauNet_checkpoint/MauNet_pretrained.pth`, so just upload micrographs and
-click **开始推理**.
+The default **Checkpoint path** is pre-filled with
+`MauNet_checkpoint/MauNet_pretrained.pth`. Upload micrographs (or point to a
+server path), adjust parameters if needed, then click **Run inference**.
 
-Supports `.png / .jpg / .tif / .tiff / .mrc / .mrcs` (single-frame and
-stacks), built-in denoising, heatmap preview, and one-click export to both
-CSV and a RELION-style coordinate `.star` file.
+Supported formats: `.png`, `.jpg`, `.jpeg`, `.tif`, `.tiff`, `.mrc`, `.mrcs`
+(single-frame and multi-frame stacks).
 
-### CLI batch inference
+#### Left panel — parameter configuration
+
+The left panel is the control area for the full picking pipeline: model loading,
+data input, inference tuning, and output settings.
+
+**Model and hardware**
+
+| Control | Description |
+| ------- | ----------- |
+| **Checkpoint path (.pth)** | Path to a trained MauNet weights file. |
+| **Device** | `auto` (GPU if available), `cuda:0`, `cuda:1`, or `cpu`. Weights are cached after the first load. |
+
+**Input data**
+
+Two input modes can be combined (paths are de-duplicated):
+
+| Mode | Description |
+| ---- | ----------- |
+| **Option A: upload** | Drag-and-drop or multi-select local files in the browser. |
+| **Option B: server path** | Type a file or directory path on the machine running the GUI. A collapsible **Browse server filesystem** explorer can fill this field. |
+
+**Core inference parameters**
+
+These map directly to MauNet's heatmap decoding logic (`utils/accuracy.py`):
+
+| Parameter | Default | Meaning |
+| --------- | ------- | ------- |
+| **Particle boxsize** | 200 | Particle **diameter** in **original micrograph pixels**. Used to set the display circle size and to derive the NMS radius after letterboxing. Important for downstream box extraction and 3D reconstruction. |
+| **Score threshold** | 0.10 | Minimum heatmap confidence; peaks below this value are discarded to suppress false positives. |
+| **NMS scale** | 0.5 | Non-maximum suppression radius = `nms_scale × (boxsize / 2) × letterbox_scale`. Larger values merge overlapping detections more aggressively (fewer duplicates, risk of missing adjacent particles); smaller values keep more candidates. |
+| **Max picks per image** | 2000 | Upper bound on detections per micrograph (or per MRCS frame), ranked by score. |
+
+**Output and execution**
+
+| Option | Default | Meaning |
+| ------ | ------- | ------- |
+| **Compute heatmap** | on | Save a heatmap view (inferno colormap) for debugging and qualitative assessment. |
+| **Filter false peaks in letterbox padding** | on | Drop detections that fall outside the original image area after aspect-preserving letterbox resize (reduces spurious edge peaks). |
+| **Enable denoising** | off | Optional preprocessing (`denoise.py`) before inference; applies to all formats including MRC/MRCS. |
+| **STAR: micrograph name = basename** | on | RELION STAR `_rlnMicrographName` uses the file basename; unchecked uses the absolute path. |
+
+Click **Run inference** to run the full pipeline: load → preprocess (letterbox +
+per-image z-score) → MauNet forward → heatmap decode → visualize → export.
+
+Per-file statistics appear at the bottom of the left panel after a run completes.
+
+#### Right panel — visualization and export
+
+**Result visualization (plasma colormap)**
+
+Detected particles are overlaid on the letterboxed micrograph. Circle color uses
+the **plasma** colormap by normalized confidence within each image:
+
+- **Purple** — lower scores (near the threshold);
+- **Yellow** — higher scores (high-confidence picks).
+
+Use the **View** toggle to switch between **Particle overlay** and **Heatmap**.
+**Previous** / **Next** browse multiple inputs or MRCS frames; the counter shows
+`index / total · filename`.
+
+**Multi-format export**
+
+| Format | Contents |
+| ------ | -------- |
+| **CSV** | Columns `filename`, `x`, `y`, `score`, `diameter` in **original image coordinates**. |
+| **RELION STAR** | Autopick STAR with `_rlnMicrographName`, `_rlnCoordinateX`, `_rlnCoordinateY`, `_rlnAutopickFigureOfMerit` — importable into RELION, CryoSPARC, and similar tools. |
+
+Download links appear above the main image after inference completes.
+
+> **MRC / RELION axis note:** GUI coordinates follow the same convention as PNG
+> inference (top-origin Y). If picks look vertically flipped on raw MRC stacks in
+> RELION, apply the Y-flip step in [§3.3](#33-flip-star-y-for-mrc--relion).
+
+### 3.2 CLI batch inference
 
 ```bash
 python test_predict.py \
@@ -150,7 +232,7 @@ Useful flags:
 | `--save_mask`           | Also dump the auxiliary mask probability map as PNG                               |
 | `--rescale_to_original` | Output coordinates in the original micrograph resolution (simple uniform scaling) |
 
-### Flip STAR Y for MRC / RELION
+### 3.3 Flip STAR Y for MRC / RELION
 
 MauNet inference on **PNG** (or a display-oriented view) uses a **top-origin**
 vertical axis. **MRC** micrographs in RELION often use the opposite convention,
