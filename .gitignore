@@ -58,3 +58,4 @@ dataset/example/      # 若你想保留示例数据，请把这一行删掉
 *.mrc
 *.mrcs
 *.star
+CryoMauNet-v1.0.0-source.zip

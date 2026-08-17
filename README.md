@@ -1,9 +1,15 @@
 # CryoMauNet
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20155024.svg)](https://doi.org/10.5281/zenodo.20155024)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21983360.svg)](https://doi.org/10.5281/zenodo.21983360)
+[![GitHub release](https://img.shields.io/github/v/release/TonySun1997/CryoMauNet)](https://github.com/TonySun1997/CryoMauNet/releases/tag/v1.0.0)
 
 **License:** This software is released under the [MIT License](LICENSE).
+
+**Software availability:** Tagged release [`v1.0.0`](https://github.com/TonySun1997/CryoMauNet/releases/tag/v1.0.0);
+permanent archival DOI for this code version: [https://doi.org/10.5281/zenodo.21983360](https://doi.org/10.5281/zenodo.21983360).
+Pretrained checkpoint weights used for the reported benchmarks:
+[https://doi.org/10.5281/zenodo.20155024](https://doi.org/10.5281/zenodo.20155024) (`MauNet_pretrained.pth`).
 
 **CryoMauNet** — *ViT-MAE + Attention U-Net with Multi-Scale Feature Injection* —
 an end-to-end deep network for cryo-EM **particle picking** on full-size
@@ -43,8 +49,10 @@ in the Git history. Download them from Zenodo and place them as below.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20155024.svg)](https://doi.org/10.5281/zenodo.20155024)
 
-**Record:** [https://doi.org/10.5281/zenodo.20155024](https://doi.org/10.5281/zenodo.20155024)  
-The dataset files there are published under **Creative Commons Attribution 4.0
+**Weights & data record:** [https://doi.org/10.5281/zenodo.20155024](https://doi.org/10.5281/zenodo.20155024)  
+(The archived **source code** for release `v1.0.0` is at
+[https://doi.org/10.5281/zenodo.21983360](https://doi.org/10.5281/zenodo.21983360).)  
+The dataset files in the weights/data record are published under **Creative Commons Attribution 4.0
 International (CC BY 4.0)**; credit the record when you reuse the data.
 
 ### 1.1 Checkpoints (no unpacking)
