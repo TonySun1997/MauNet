@@ -1,5 +1,10 @@
 # CryoMauNet
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20155024.svg)](https://doi.org/10.5281/zenodo.20155024)
+
+**License:** This software is released under the [MIT License](LICENSE).
+
 **CryoMauNet** — *ViT-MAE + Attention U-Net with Multi-Scale Feature Injection* —
 an end-to-end deep network for cryo-EM **particle picking** on full-size
 micrographs (1024×1024).
