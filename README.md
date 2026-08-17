@@ -1,6 +1,6 @@
-# MauNet
+# CryoMauNet
 
-**MauNet** — *ViT-MAE + Attention U-Net with Multi-Scale Feature Injection* —
+**CryoMauNet** — *ViT-MAE + Attention U-Net with Multi-Scale Feature Injection* —
 an end-to-end deep network for cryo-EM **particle picking** on full-size
 micrographs (1024×1024).
 
@@ -16,19 +16,24 @@ four spatial scales and **zero-init fused** into an Attention U-Net's skip
 connections, so the network starts as a pure U-Net and gradually
 incorporates MAE features as training proceeds.
 
+> **Naming note:** The method and this repository are named **CryoMauNet**.
+> Internal module / class / checkpoint filenames may still use the historical
+> prefix `MauNet` / `maunet` (e.g. `models/maunet.py`, `MauNet_checkpoint/`);
+> the conda environment remains `maunet`.
+
 ---
 
 ## 1. Installation
 
 ```bash
-git clone https://github.com/TonySun1997/MauNet.git
-cd MauNet
+git clone https://github.com/TonySun1997/CryoMauNet.git
+cd CryoMauNet
 
 conda env create -f environment.yml
 conda activate maunet
 ```
 
-Large artifacts (MAE / MauNet weights, training set, and a test sample) are **not**
+Large artifacts (MAE / CryoMauNet weights, training set, and a test sample) are **not**
 in the Git history. Download them from Zenodo and place them as below.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20155024.svg)](https://doi.org/10.5281/zenodo.20155024)
@@ -83,7 +88,7 @@ md5sum MAE_checkpoint/MAE_epoch_500.pth.tar \
 ## 2. Project layout
 
 ```
-MauNet/
+CryoMauNet/
 ├── config.py                  # argparse + module-level config
 ├── train.py                   # training entry point (single-/multi-GPU)
 ├── test_predict.py            # CLI batch inference → particle coordinate CSV
@@ -91,7 +96,7 @@ MauNet/
 ├── gui_predict.py             # Gradio GUI for interactive picking
 ├── denoise.py                 # MRC / image denoising helpers
 ├── models/
-│   ├── maunet.py              # MauNet (main network)
+│   ├── maunet.py              # CryoMauNet network (class MauNet)
 │   ├── mae_encoder.py         # MAE ViT + feature-extractor wrapper
 │   └── unet_blocks.py         # Attention U-Net building blocks
 ├── dataset/
@@ -103,7 +108,7 @@ MauNet/
 │   └── loss.py                # FocalLoss / TverskyLoss / CenterNetFocalLoss
 ├── MAE_checkpoint/            # pre-trained MAE ViT encoder weights
 │   └── MAE_epoch_500.pth.tar
-├── MauNet_checkpoint/         # ★ pre-trained MauNet weights (ready to use)
+├── MauNet_checkpoint/         # ★ pre-trained CryoMauNet weights (ready to use)
 │   └── MauNet_pretrained.pth
 └── environment.yml
 ```
@@ -114,7 +119,7 @@ MauNet/
 
 ### 3.1 Graphical User Interface (recommended)
 
-To promote the practical use of MauNet in cryo-EM research, we provide an
+To promote the practical use of CryoMauNet in cryo-EM research, we provide an
 intuitive **Gradio** web GUI (`gui_predict.py`) for end-to-end particle picking.
 The interface integrates one-click inference, real-time result visualization,
 and standard-format export — no command-line expertise required. The layout
@@ -145,7 +150,7 @@ data input, inference tuning, and output settings.
 
 | Control | Description |
 | ------- | ----------- |
-| **Checkpoint path (.pth)** | Path to a trained MauNet weights file. |
+| **Checkpoint path (.pth)** | Path to a trained CryoMauNet weights file. |
 | **Device** | `auto` (GPU if available), `cuda:0`, `cuda:1`, or `cpu`. Weights are cached after the first load. |
 
 **Input data**
@@ -159,7 +164,7 @@ Two input modes can be combined (paths are de-duplicated):
 
 **Core inference parameters**
 
-These map directly to MauNet's heatmap decoding logic (`utils/accuracy.py`):
+These map directly to CryoMauNet's heatmap decoding logic (`utils/accuracy.py`):
 
 | Parameter | Default | Meaning |
 | --------- | ------- | ------- |
@@ -178,7 +183,7 @@ These map directly to MauNet's heatmap decoding logic (`utils/accuracy.py`):
 | **STAR: micrograph name = basename** | on | RELION STAR `_rlnMicrographName` uses the file basename; unchecked uses the absolute path. |
 
 Click **Run inference** to run the full pipeline: load → preprocess (letterbox +
-per-image z-score) → MauNet forward → heatmap decode → visualize → export.
+per-image z-score) → CryoMauNet forward → heatmap decode → visualize → export.
 
 Per-file statistics appear at the bottom of the left panel after a run completes.
 
@@ -234,7 +239,7 @@ Useful flags:
 
 ### 3.3 Flip STAR Y for MRC / RELION
 
-MauNet inference on **PNG** (or a display-oriented view) uses a **top-origin**
+CryoMauNet inference on **PNG** (or a display-oriented view) uses a **top-origin**
 vertical axis. **MRC** micrographs in RELION often use the opposite convention,
 so particle positions in an exported `.star` can appear vertically mirrored
 when you open the same picks on the raw MRC stack.
@@ -368,7 +373,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 train.py \
     --num_epochs 300
 ```
 
-### Warm-start from the pre-trained MauNet weights
+### Warm-start from the pre-trained CryoMauNet weights
 
 If you want to fine-tune our pre-trained model on your own data instead of
 training from scratch:
